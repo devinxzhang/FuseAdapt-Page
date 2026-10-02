@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "Please cite the paper in preferred-citation. This repository contains its project website."
+type: software
+title: "FuseAdapt project website"
+authors:
+  - family-names: Zhang
+    given-names: Xin
+    affiliation: National University of Singapore
+  - family-names: Tan
+    given-names: Robby T.
+    affiliation: National University of Singapore
+url: "https://devinxzhang.github.io/FuseAdapt-Page/"
+preferred-citation:
+  type: conference-paper
+  title: "FuseAdapt: Parameter-Efficient Multimodal Fusion for Semantic Segmentation with Missing Modalities"
+  authors:
+    - family-names: Zhang
+      given-names: Xin
+      affiliation: National University of Singapore
+    - family-names: Tan
+      given-names: Robby T.
+      affiliation: National University of Singapore
+  year: 2026
+  collection-title: "Advances in Neural Information Processing Systems"
+  url: "https://openreview.net/forum?id=SWGx6oxOoy"
