@@ -1,11 +1,4 @@
 'use strict';
-const selectorButtons = document.querySelectorAll('[data-backbone]');
-selectorButtons.forEach(button => button.addEventListener('click', () => {
-  selectorButtons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
-  document.querySelectorAll('[data-row]').forEach(row => {
-    row.classList.toggle('muted-row', button.dataset.backbone !== 'all' && row.dataset.row !== button.dataset.backbone);
-  });
-}));
 const copyButton = document.getElementById('copy-bib');
 copyButton.addEventListener('click', async () => {
   const text = document.getElementById('bibtex').textContent;
