@@ -25,16 +25,26 @@
 <a class="skip" href="#main">Skip to content</a>
 <main id="main" class="wrap">
 <header class="hero">
-<h1>FuseAdapt: Parameter-Efficient Multimodal Fusion for Semantic Segmentation with Missing Modalities</h1>
+<h1>FuseAdapt:<br>Parameter-Efficient Multimodal Fusion for Semantic Segmentation with Missing Modalities</h1>
 <p class="venue">NeurIPS 2026 · Poster</p>
-<p class="authors"><a href="https://scholar.google.com/citations?user=nSqxFpAAAAAJ">Xin Zhang</a><span> · </span><a href="https://tanrobby.github.io/">Robby T. Tan</a></p>
+<p class="authors"><a href="https://scholar.google.com/citations?user=nSqxFpAAAAAJ">Xin Zhang</a><span>, </span><a href="https://tanrobby.github.io/">Robby T. Tan</a></p>
 <p class="affiliation">National University of Singapore</p>
 <nav class="actions" aria-label="Paper resources"><a class="button" href="#paper-status">arXiv · coming soon</a><a class="button" href="https://openreview.net/forum?id=SWGx6oxOoy">OpenReview</a><a class="button" href="#citation">BibTeX</a></nav>
-<p class="lead">Parameter-efficient multimodal segmentation that works with the sensors available at inference time.</p>
+
 </header>
+<section class="teaser" aria-label="FuseAdapt segmentation examples"><figure class="paper-figure"><a href="assets/qualitative.png" aria-label="Open the full-resolution DELIVER qualitative comparison"><img src="assets/qualitative.png" width="2046" height="856" fetchpriority="high" alt="Two DELIVER semantic segmentation examples comparing input images, ground truth, CMNeXt, StitchFusion, and FuseAdapt. The top example uses RGB only; the bottom uses RGB and LiDAR."></a><figcaption>Semantic segmentation with RGB only (top) and RGB + LiDAR (bottom) on DELIVER.</figcaption></figure><p class="teaser-summary">FuseAdapt combines modality-private adaptation and cross-modal residual fusion to segment scenes with missing sensors.</p></section>
+<section class="abstract" aria-labelledby="abstract-heading"><h2 id="abstract-heading">Abstract</h2><p>Multi-modal semantic segmentation benefits from complementary sensors, but this benefit is fragile when some modalities are degraded or missing at test time.
+Many existing methods rely on dedicated fusion modules or multi-branch cross-modal encoders, and the fusion often becomes unreliable when modalities are absent, leading to substantial performance drops.
+We propose <strong>FuseAdapt</strong>, a parameter-efficient framework that performs fusion within the adaptation space of a frozen vision foundation model (VFM), exploring whether VFM priors can serve as an effective shared backbone for multi-modal segmentation.
+Instead of attaching a standalone fusion network, FuseAdapt assigns each modality a lightweight adaptation branch and performs <em>adaptation-space fusion</em> by keeping Q/V low-rank adaptation private to each modality and routing only FFN low-rank residual activations across modalities inside the frozen backbone.
+The pretrained VFM remains fixed while modality-specific corrections and explicit cross-modal interaction are learned through the adaptation paths.
+To handle missing modalities, we further introduce <strong>Predictive Modality Modeling (PMM)</strong>, a direct representation-level objective for cross-modal redundancy.
+During training, PMM masks a target modality and predicts its embedding from the visible ones, supervised by a teacher target computed under full-modality input.
+PMM is used only during training and adds no inference-time overhead.
+Across three multi-modal segmentation benchmarks (MCubeS, DELIVER, MUSES), FuseAdapt consistently improves both modality-complete and modality-incomplete segmentation with a small trainable budget, yielding up to +3.01 mIoU under full modalities and +12.56 mIoU under missing modalities over prior state-of-the-art.</p></section>
 <section id="method" aria-labelledby="method-heading">
 <h2 id="method-heading">Method</h2>
-<figure class="paper-figure"><a href="assets/method.png" aria-label="Open the full-resolution FuseAdapt architecture figure"><img src="assets/method.png" width="2048" height="919" alt="FuseAdapt architecture: modalities share frozen backbone weights, retain private attention LoRA branches, and exchange FFN low-rank residual activations. PMM predicts a masked modality representation using visible context and a full-context EMA teacher." fetchpriority="high"></a><figcaption><span>Figure 1.</span> FuseAdapt and Predictive Modality Modeling. Frozen backbone weights are shared; sensor streams retain their own representations.</figcaption></figure>
+<figure class="paper-figure"><a href="assets/method.png" aria-label="Open the full-resolution FuseAdapt architecture figure"><img src="assets/method.png" width="2048" height="919" alt="FuseAdapt architecture: modalities share frozen backbone weights, retain private attention LoRA branches, and exchange FFN low-rank residual activations. PMM predicts a masked modality representation using visible context and a full-context EMA teacher." loading="lazy"></a><figcaption><span>Figure 1.</span> FuseAdapt and Predictive Modality Modeling. Frozen backbone weights are shared; sensor streams retain their own representations.</figcaption></figure>
 <p>FuseAdapt adapts a <strong>shared frozen vision backbone</strong> using modality-specific low-rank adaptation (LoRA). Query and value updates stay private to each sensor, while token-wise routing exchanges feedforward low-rank residuals across available modalities. Missing sources are masked and routing weights are renormalized.</p>
 <p><strong>Predictive Modality Modeling (PMM)</strong> trains the model to predict a missing sensor’s representation from visible inputs, using a full-context exponential moving average teacher. The teacher and predictor are removed at inference. Routing and averaging operate on a common projected token grid.</p>
 </section>
@@ -51,9 +61,6 @@
 <div class="efficiency-note"><h3>Parameter efficiency, with measured deployment cost</h3><p>At 1024 × 1024, batch 1 and FP32 on an H100, three-modality MiT-B0 FuseAdapt takes <strong>21.05 ms</strong>, versus 19.63 ms for CMNeXt and 26.69 ms for StitchFusion. These timings use 20 warm-ups and 100 measured runs. Parameter efficiency does not imply the lowest latency or memory use.</p></div>
 
 </details>
-<h3 class="qual-heading">Segmentation with missing inputs</h3>
-<p>DELIVER examples using RGB only (top) and RGB + LiDAR (bottom).</p>
-<figure class="paper-figure"><a href="assets/qualitative.png" aria-label="Open the full-resolution DELIVER qualitative comparison"><img src="assets/qualitative.png" width="2046" height="856" loading="lazy" alt="Two DELIVER semantic segmentation examples comparing input images, ground truth, CMNeXt, StitchFusion, and FuseAdapt. The top example uses RGB only; the bottom uses RGB and LiDAR."></a><figcaption><span>Figure 2.</span> The same model is evaluated with different available sensor subsets. These selected examples illustrate predictions; quantitative comparisons are reported separately.</figcaption></figure>
 </section>
 <section id="citation" aria-labelledby="citation-heading">
 <h2 id="citation-heading">BibTeX</h2>
@@ -73,5 +80,6 @@
 <footer class="wrap">
 <p><a href="mailto:x.zhang@u.nus.edu">Contact</a> · <a href="https://github.com/devinxzhang/FuseAdapt-Page">Website source</a></p>
 <p>More from the authors: <a href="https://devinxzhang.github.io/MFuser_ProjPage/">MFuser</a> · <a href="https://devinxzhang.github.io/CycleGRPO-Page/">CycleGRPO</a></p>
+<p class="template-credit">Layout adapted from <a href="https://devinxzhang.github.io/CycleGRPO-Page/">CycleGRPO</a> and the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template">Academic Project Page Template</a>, based on <a href="https://nerfies.github.io/">Nerfies</a>. Website layout: <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</p>
 </footer>
 </body></html>
